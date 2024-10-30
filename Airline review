@@ -1,0 +1,77 @@
+#
+# فرض کن دیتاست به شکل DataFrame وارد شده باشه
+data = pd.read_csv('your_sales_dataset.csv')
+
+# نمایش خلاصه‌ای از داده‌ها
+print(data.head())
+
+# 1. شناسایی روند فروش ماهانه
+data['Date'] = pd.to_datetime(data['Date'])
+data['Month'] = data['Date'].dt.to_period('M')
+monthly_sales = data.groupby('Month')['Sales'].sum()
+print(monthly_sales)
+
+# رسم نمودار فروش ماهانه
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=monthly_sales, marker='o', color='b')
+plt.title('Monthly Sales Trend')
+plt.xlabel('Month')
+plt.ylabel('Sales')
+plt.grid(True)
+plt.show()
+
+# 2. شناسایی محصولات پرفروش و کم‌فروش
+product_sales = data.groupby('Product_ID')['Sales'].sum().sort_values(ascending=False)
+print(product_sales)
+
+# رسم نمودار محصولات پرفروش
+plt.figure(figsize=(10, 6))
+sns.barplot(x=product_sales.index[:10], y=product_sales.values[:10], palette='viridis')
+plt.title('Top 10 Best Selling Products')
+plt.xlabel('Product ID')
+plt.ylabel('Total Sales')
+plt.grid(True)
+plt.show()
+
+# 3. تحلیل ارتباط بین عوامل مختلف و فروش
+# برای مثال، بررسی تاثیر تبلیغات بر فروش
+ad_sales = data.groupby('Ad_Campaign')['Sales'].mean().sort_values(ascending=False)
+print(ad_sales)
+
+# رسم نمودار تاثیر تبلیغات بر فروش
+plt.figure(figsize=(10, 6))
+sns.barplot(x=ad_sales.index, y=ad_sales.values, palette='coolwarm')
+plt.title('Impact of Ad Campaigns on Sales')
+plt.xlabel('Ad Campaign')
+plt.ylabel('Average Sales')
+plt.grid(True)
+plt.show()import numpy as np
+import matplotlib.pyplot as plt
+
+# تعداد داده‌ها
+num_samples = 100
+
+# داده‌های تصادفی برای گروه‌های سنی مختلف
+ages = ['10-20', '21-30', '31-40', '41-50']
+data = {age: np.random.normal(loc, scale, num_samples) for age, loc, scale in zip(ages, [15, 25, 35, 45], [3, 4, 5, 6])}
+
+# رسم نمودار توزیع
+plt.figure(figsize=(14, 7))
+for i, (age, values) in enumerate(data.items(), 1):
+    plt.subplot(2, 2, i)
+    plt.hist(values, bins=20, color='skyblue', alpha=0.7)
+    plt.title(f'Distribution in Age Group {age}')
+    plt.xlabel('Value')
+    plt.ylabel('Frequency')
+    plt.grid(True)
+plt.tight_layout()
+plt.show()
+
+# رسم نمودار جعبه‌ای
+plt.figure(figsize=(10, 6))
+plt.boxplot(data.values(), labels=data.keys())
+plt.title('Box Plot of Different Age Groups')
+plt.xlabel('Age Groups')
+plt.ylabel('Values')
+plt.grid(True)
+plt.show()
